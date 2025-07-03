@@ -104,3 +104,111 @@ sudo systemctl enable nginx
 sudo ufw allow 'Nginx Full'
 sudo ufw enable
 ```
+
+### Step 4
+
+Create the file `var/www` if not exists.
+
+```
+mkdir /var/www
+```
+
+Connect your domain with VPS IP
+
+### Step 5
+
+Go to `var/www` file. Delete unused file/folder
+
+Clone your github using SSH
+
+Then Install the MongoDB
+
+URL: https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
+
+```
+sudo ufw allow 27017
+```
+
+### Step 6
+
+Create replica
+
+```
+sudo nano /etc/mongod.conf
+```
+
+```
+replication:
+ replSetName: "rs0"
+```
+
+```
+sudo systemctl restart mongod
+```
+
+```
+mongosh
+```
+
+```
+rs.initiate()
+```
+
+### Step 7
+
+Set-up your .env file. Go to your project and
+
+```
+nano .emv
+```
+
+(Add the database URL)
+
+```
+DATABASE_URL="mongodb://127.0.0.1:27017/name?replicaSet=rs0"
+```
+
+(Run this command)
+
+```
+npm i
+```
+
+```
+npx prisma generat
+```
+
+```
+npx prisma db push
+```
+
+```
+npm run build
+```
+
+```
+npm run dev
+```
+
+### Step 8
+
+Install pm2 and setup
+
+```
+npm install -g pm2
+pm2 --version
+```
+
+```
+pm2 start npm --name "project-frontend" -- start (for next js frontend)
+pm2 start dist/server.js --name project-backend (for backend)
+```
+
+```
+pm2 list
+pm2 startup
+pm2 save
+pm2 restart all (restart)
+pm2 stop nextjs-app (stop server)
+pm2 delete nextjs-app (delete server)
+```
