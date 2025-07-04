@@ -243,7 +243,7 @@ location / {
 }
 ```
 
-### Step 8
+### Step 9
 
 Install pm2 and setup
 
@@ -264,6 +264,17 @@ pm2 save
 pm2 restart all (restart)
 pm2 stop nextjs-app (stop server)
 pm2 delete nextjs-app (delete server)
+```
+
+### Step 8
+
+Install SSL
+
+```
+sudo apt install certbot python3-certbot-nginx -y
+```
+```
+sudo certbot --nginx -d <yourdomain.com> -d <www.yourdomain.com>
 ```
 
 ## Kill a port
