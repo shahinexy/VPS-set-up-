@@ -28,6 +28,14 @@ Enabling and Configuring UFW (Uncomplicated Firewall)
 sudo ufw enable
 ```
 
+(If sudo command not found)
+
+```
+sudo apt update
+sudo apt install ufw -y
+sudo ufw enable
+```
+
 ```
 sudo ufw allow 22
 ```
@@ -35,7 +43,7 @@ sudo ufw allow 22
 Check allow port status
 
 ```
-sudo ufw allow 22
+sudo ufw allow status
 ```
 
 sudo ufw status
@@ -71,7 +79,7 @@ ls -al ~/.ssh
 ```
 
 ```
-ssh-keygen -t rsa -b 4096 -C "github@smtech24.com"
+ssh-keygen -t rsa -b 4096 -C "smt.team.pixel@gmail.com"
 ```
 
 ```
@@ -192,6 +200,51 @@ npm run dev
 
 ### Step 8
 
+Configure nginx
+
+create separet file for backend and frontend
+
+```
+sudo nano etc/nginx/conf.d/file.conf
+```
+
+This setup for Backend
+
+```
+server{
+    listen 80;
+    server_name api.myfinancialtrading.com;
+
+    location / {
+            proxy_pass  http://localhost:3000;
+            # Add other proxy settings if needed
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+     }
+```
+
+This setup for Frontend
+
+```
+server {
+listen 80;
+server_name yourdomain.com www.yourdomain.com;
+location / {
+    proxy_pass http://localhost:3000; # Next.js runs on port 3000
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+### Step 8
+
 Install pm2 and setup
 
 ```
@@ -211,4 +264,23 @@ pm2 save
 pm2 restart all (restart)
 pm2 stop nextjs-app (stop server)
 pm2 delete nextjs-app (delete server)
+```
+
+## Kill a port
+
+```
+sudo apt update
+sudo apt install lsof -y
+```
+
+```
+sudo lsof -i :<port>
+```
+
+You will get output like:
+COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME
+node 12345 root 22u IPv6 12345 0t0 TCP \*:5005 (LISTEN)
+
+```
+sudo kill -9 12345
 ```
