@@ -205,7 +205,7 @@ Configure nginx
 create separet file for backend and frontend
 
 ```
-sudo nano etc/nginx/conf.d/file.conf
+sudo nano /etc/nginx/conf.d/file.conf
 ```
 
 This setup for Backend
@@ -213,7 +213,7 @@ This setup for Backend
 ```
 server{
     listen 80;
-    server_name api.myfinancialtrading.com;
+    server_name api.domain.com;
 
     location / {
             proxy_pass  http://localhost:3000;
@@ -223,6 +223,34 @@ server{
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
+     }
+```
+
+This setup for Backend with WebSocket
+
+```
+    server{
+        listen 80;
+        server_name api.domain.com;
+           client_max_body_size 1000M;
+
+        location / {
+             proxy_pass http://localhost:5008;
+
+             # WebSocket-specific headers
+             proxy_http_version 1.1;
+             proxy_set_header Upgrade $http_upgrade;
+             proxy_set_header Connection "Upgrade";
+
+             # Additional proxy headers
+             proxy_set_header Host $host;
+             proxy_set_header X-Forwarded-Host $host;
+             proxy_set_header X-Forwarded-Proto $scheme;
+             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+             # Optional: Disable caching for WebSocket connections
+             proxy_cache_bypass $http_upgrade; # Ensures that WebSocket connections are not cached.
+         }
      }
 ```
 
@@ -273,6 +301,7 @@ Install SSL
 ```
 sudo apt install certbot python3-certbot-nginx -y
 ```
+
 ```
 sudo certbot --nginx -d <yourdomain.com> -d <www.yourdomain.com>
 ```
