@@ -250,6 +250,12 @@ This setup for Backend with WebSocket
 
              # Optional: Disable caching for WebSocket connections
              proxy_cache_bypass $http_upgrade; # Ensures that WebSocket connections are not cached.
+
+             # Prevent WebSocket disconnect
+             proxy_read_timeout 21600s;   # 6 hours
+             proxy_send_timeout 21600s;   # 6 hours
+             proxy_connect_timeout 21600s; # 6 hours
+
          }
      }
 ```
